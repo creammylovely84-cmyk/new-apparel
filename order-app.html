@@ -702,7 +702,8 @@ textarea.fi{resize:vertical;min-height:70px;}
 
 <script>
 var GS_KEY='na_gs_url', LK='na-orders', UK='na-users', SK='na-session';
-var orders=[], editId=null, rowCt=0, slips={dep:null,fin:null}, gsUrl=null;
+var orders=[], editId=null, rowCt=0, slips={dep:null,fin:null};
+var gsUrl='https://script.google.com/macros/s/AKfycbwgJYt9PzrmYTaonOJ8wdEl3e0Y6WPHKhaya6c9mCj82K-RYTh5Ziyq9YOfbE3yQRlXdg/exec'; // default URL
 var currentUser=null;
 var users=[];
 var activeLoc=null;
@@ -820,10 +821,12 @@ function restoreSession(){
   return false;
 }
 // ── GOOGLE SHEET API ──
+var DEFAULT_GS_URL='https://script.google.com/macros/s/AKfycbwgJYt9PzrmYTaonOJ8wdEl3e0Y6WPHKhaya6c9mCj82K-RYTh5Ziyq9YOfbE3yQRlXdg/exec';
 function initGS(){
   var u=ls(GS_KEY);
-  if(u&&u.indexOf('script.google.com')>=0){gsUrl=u;setBadge(true);return true;}
-  setBadge(false);return false;
+  if(u&&u.indexOf('script.google.com')>=0){gsUrl=u;}
+  else{gsUrl=DEFAULT_GS_URL;lss(GS_KEY,DEFAULT_GS_URL);}
+  setBadge(true);return true;
 }
 function setBadge(ok){
   var el=document.getElementById('db-badge');
