@@ -771,7 +771,7 @@ textarea.fi{resize:vertical;min-height:70px;}
 <script>
 var GS_KEY='na_gs_url', LK='na-orders', UK='na-users', SK='na-session';
 var orders=[], editId=null, rowCt=0, slips={dep:null,fin:null};
-var gsUrl='https://script.google.com/macros/s/AKfycbyZueTilk0HZXk8lNtJUj7Wbl2mOvaXlzyUQ1opH2M6tz65oQAKZphl6kKPakQRJFUNpw/exec'; // default URL
+var gsUrl='https://script.google.com/macros/s/AKfycbwsQj18ZNKYByyoC979T-LbVLQPbFvN0qApOA73wmLYcU4oGw0vxD7DQ5tvmgZ69ygP5w/exec'; // default URL
 var currentUser=null;
 var users=[];
 var activeLoc=null;
@@ -888,7 +888,7 @@ function restoreSession(){
   return false;
 }
 // ── GOOGLE SHEET API ──
-var DEFAULT_GS_URL='https://script.google.com/macros/s/AKfycbyZueTilk0HZXk8lNtJUj7Wbl2mOvaXlzyUQ1opH2M6tz65oQAKZphl6kKPakQRJFUNpw/exec';
+var DEFAULT_GS_URL='https://script.google.com/macros/s/AKfycbwsQj18ZNKYByyoC979T-LbVLQPbFvN0qApOA73wmLYcU4oGw0vxD7DQ5tvmgZ69ygP5w/exec';
 function initGS(){
   var u=ls(GS_KEY);
   if(u&&u.indexOf('script.google.com')>=0){gsUrl=u;}
