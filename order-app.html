@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NEW APPAREL — ใบสั่งงาน</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -264,8 +265,68 @@ textarea.fi{resize:vertical;min-height:70px;}
 .cal-popup-item:hover .cal-popup-name{color:var(--accent);}
 .cal-popup-name{font-size:13px;font-weight:600;color:var(--text);}
 .cal-popup-meta{font-size:11px;color:var(--t3);margin-top:2px;}
+/* ── DASHBOARD ── */
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
+.dash-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.dash-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi-blue::before{background:var(--accent);}
+.kpi-green::before{background:var(--green);}
+.kpi-gold::before{background:var(--gold);}
+.kpi-red::before{background:var(--red);}
+.kpi-purple::before{background:#8b5cf6;}
+.kpi-icon{font-size:28px;margin-bottom:8px;}
+.kpi-val{font-size:24px;font-weight:700;color:var(--text);}
+.kpi-lbl{font-size:12px;color:var(--t3);margin-top:3px;}
+.kpi-sub{font-size:12px;color:var(--green);margin-top:4px;font-weight:500;}
+.dash-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;}
+.dash-title{font-size:13px;font-weight:700;color:var(--t2);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.chart-wrap{position:relative;height:220px;}
+.top-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.top-row:last-child{border-bottom:none;}
+.top-rank{width:22px;height:22px;border-radius:50%;background:var(--acl);color:var(--accent);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.top-rank.g1{background:#ffd700;color:#7a5c00;}
+.top-rank.g2{background:#c0c0c0;color:#555;}
+.top-rank.g3{background:#cd7f32;color:#fff;}
+.top-name{flex:1;margin:0 10px;font-weight:500;}
+.top-val{font-weight:700;color:var(--accent);}
+.deadline-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.deadline-item:last-child{border-bottom:none;}
+.deadline-item:hover .dl-name{color:var(--accent);}
+.dl-days{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.dl-today{background:var(--acl);color:var(--accent);}
+.dl-soon{background:var(--grl);color:var(--green);}
+.dl-overdue{background:var(--rl);color:var(--red);}
+.dl-name{font-size:13px;font-weight:500;flex:1;}
+.dl-meta{font-size:11px;color:var(--t3);}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<style>
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi-blue::before{background:var(--accent);}
+.kpi-green::before{background:var(--green);}
+.kpi-red::before{background:var(--red);}
+.kpi-gold::before{background:var(--gold);}
+.kpi-icon{font-size:28px;margin-bottom:8px;}
+.kpi-val{font-size:24px;font-weight:700;color:var(--text);}
+.kpi-lbl{font-size:12px;color:var(--t3);margin-top:4px;}
+.kpi-sub{font-size:12px;color:var(--t2);margin-top:6px;}
+.dash-bar-wrap{margin-bottom:10px;}
+.dash-bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:4px;}
+.dash-bar-track{background:var(--border);border-radius:20px;height:8px;overflow:hidden;}
+.dash-bar-fill{height:8px;border-radius:20px;transition:.4s;}
+.due-item{padding:8px 10px;border-radius:8px;margin-bottom:6px;cursor:pointer;border:1px solid var(--border);transition:.15s;}
+.due-item:hover{border-color:var(--accent);background:var(--acl);}
+.due-overdue{border-color:var(--red)!important;background:var(--rl)!important;}
+.due-today{border-color:var(--accent)!important;background:var(--acl)!important;}
+.top-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);}
+.top-item:last-child{border-bottom:none;}
+.top-rank{width:22px;height:22px;border-radius:50%;background:var(--acl);color:var(--accent);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.top-rank.gold{background:#fff3cd;color:#d4820a;}
+.top-rank.silver{background:#f0f0f0;color:#666;}
+.top-rank.bronze{background:#fdf0e6;color:#a0522d;}
 </style>
-</head>
 <body>
 <div class="app">
   <nav class="sb">
@@ -279,7 +340,8 @@ textarea.fi{resize:vertical;min-height:70px;}
     </div>
     <div class="sb-nav">
       <div class="sb-lbl">เมนู</div>
-      <div class="sb-item active" id="nav-list" onclick="filterLoc(null)" >📋 รายการทั้งหมด</div>
+      <div class="sb-item active" id="nav-list" onclick="filterLoc(null)">📋 รายการทั้งหมด</div>
+      <div class="sb-item" id="nav-dash" onclick="showPage('dash')">📊 Dashboard</div>
       <div class="sb-item" id="nav-new" onclick="showPage('new')">✏️ สร้างใบสั่งงานใหม่</div>
       <div class="sb-item" id="nav-cal" onclick="showPage('cal')">📅 ปฏิทินจัดส่ง</div>
       <div class="sb-lbl" style="margin-top:6px;background:var(--accent);color:#fff;border-radius:6px;padding:5px 10px;opacity:1;">สาขาที่ผลิต <span style="opacity:.7;font-weight:400;">(ยังไม่จัดส่ง)</span></div>
@@ -332,6 +394,8 @@ textarea.fi{resize:vertical;min-height:70px;}
           <button class="btn btn-o" onclick="showPage('list')">← กลับ</button>
           <button class="btn btn-o" onclick="previewOrder()">👁 ดูตัวอย่าง</button>
           <button class="btn btn-print" onclick="printForm()">🖨️ พิมพ์</button>
+          <button class="btn btn-print" onclick="downloadPDF()" style="color:#e74c3c;border-color:#e74c3c;" title="ดาวน์โหลด PDF">📄 PDF</button>
+          <button class="btn btn-o" onclick="shareOrder()" title="แชร์ใบงาน">🔗 แชร์</button>
           <button class="btn btn-p" id="save-btn" onclick="saveOrder()">💾 บันทึก</button>
         </div>
       </div>
@@ -464,7 +528,61 @@ textarea.fi{resize:vertical;min-height:70px;}
         <div class="fsec"><div class="ftitle">หมายเหตุ</div><textarea id="f-notes" class="fi" placeholder="บันทึกเพิ่มเติม..."></textarea></div>
       </div></div>
     </div>
-    <!-- CALENDAR PAGE -->
+
+    <!-- DASHBOARD PAGE -->
+    <div id="page-dash" style="display:none;">
+      <div class="topbar">
+        <div><div class="pg-title">📊 Dashboard</div><div class="pg-sub" id="dash-sub">ภาพรวมธุรกิจ NEW APPAREL</div></div>
+        <div style="display:flex;gap:8px;">
+          <select id="dash-period" class="fi" style="width:160px;" onchange="renderDash()">
+            <option value="month" selected>เดือนนี้</option>
+            <option value="3month">3 เดือนล่าสุด</option>
+            <option value="year">ปีนี้</option>
+            <option value="all">ทั้งหมด</option>
+          </select>
+          <button class="btn btn-o" onclick="renderDash()">🔄</button>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div id="dash-kpi" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;"></div>
+
+      <!-- Row 1: Monthly bar + Branch donut -->
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px;">
+        <div class="dash-card">
+          <div class="dash-title">📈 ยอดขายรายเดือน</div>
+          <div style="position:relative;height:220px;"><canvas id="chart-monthly"></canvas></div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-title">🏭 สาขาที่ผลิต</div>
+          <div style="position:relative;height:220px;"><canvas id="chart-branch"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Row 2: Deadline list + Staff bar -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div class="dash-card">
+          <div class="dash-title">⏰ งานใกล้ครบกำหนดส่ง</div>
+          <div id="dash-due" style="max-height:220px;overflow-y:auto;"></div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-title">👤 ยอดขายแยกตามพนักงาน</div>
+          <div style="position:relative;height:220px;"><canvas id="chart-staff"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Row 3: Top customers + Technique -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div class="dash-card">
+          <div class="dash-title">🏆 Top ลูกค้า</div>
+          <div style="position:relative;height:220px;"><canvas id="chart-topcust"></canvas></div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-title">🔧 เทคนิคการผลิต</div>
+          <div style="position:relative;height:220px;"><canvas id="chart-tech"></canvas></div>
+        </div>
+      </div>
+    </div>
     <div id="page-cal" style="display:none;">
       <div class="cal-header">
         <div class="cal-nav">
@@ -671,8 +789,8 @@ function onLoginSuccess(){
   adminItems.forEach(function(el){el.style.display=currentUser.role==='admin'?'':'none';});
   // auto-fill ผู้ออกบิล
   document.getElementById('f-issuer').value=currentUser.displayName;
-  // โหลดข้อมูล
-  reloadOrders();
+  // โหลดข้อมูล แล้วไปหน้า Dashboard
+  reloadOrders().then(function(){showPage('dash');});
   if(currentUser.role==='admin') loadUsers();
 }
 
@@ -853,6 +971,8 @@ async function loadOrders(){
 async function reloadOrders(){
   document.getElementById('list-sub').textContent='กำลังโหลด...';
   await loadOrders();renderList();updateStats();
+  // ถ้ายังอยู่หน้า dash ให้ render ด้วย
+  if(document.getElementById('page-dash').style.display!=='none') renderDash();
 }
 
 // ── NAVIGATION ──
@@ -886,12 +1006,13 @@ function filterLoc(loc){
 }
 
 function showPage(pg){
-  document.getElementById('page-list').style.display=pg==='list'?'':'none';
-  document.getElementById('page-new').style.display=pg==='new'?'':'none';
-  document.getElementById('page-cal').style.display=pg==='cal'?'':'none';
-  document.getElementById('page-users').style.display=pg==='users'?'':'none';
+  ['page-list','page-new','page-cal','page-users','page-dash'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.style.display='none';
+  });
+  document.getElementById('page-'+pg).style.display='';
   document.getElementById('nav-new').className='sb-item'+(pg==='new'?' active':'');
   document.getElementById('nav-cal').className='sb-item'+(pg==='cal'?' active':'');
+  document.getElementById('nav-dash').className='sb-item'+(pg==='dash'?' active':'');
   document.getElementById('nav-users').className='sb-item admin-only'+(pg==='users'?' active':'');
   if(pg==='list'){editId=null;renderList();}
   if(pg!=='list'){
@@ -902,6 +1023,7 @@ function showPage(pg){
   if(pg==='new'&&!editId)initForm();
   if(pg==='users')renderUsers();
   if(pg==='cal')renderCal();
+  if(pg==='dash')renderDash();
   closeCalPopup();
 }
 
@@ -1121,6 +1243,68 @@ function navAC(e,i){
   items.forEach(function(el,idx){el.className='ac-item'+(idx===acIdx[i]?' active':'');});
 }
 
+function checkShipFee(){
+  var o=colForm();
+  if(!o.cust.trim()){toast('กรุณากรอกชื่อลูกค้าก่อน','err');return;}
+  var w=window.open('','_blank','width=860,height=700');
+  if(!w){toast('กรุณาอนุญาต Popup','err');return;}
+  var h=buildDoc(o);
+  w.document.write('<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><title>ใบสั่งงาน '+(o.no||'')+'</title>'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Tahoma,"TH Sarabun New",Arial,sans-serif;padding:20px 28px;color:#13172b;font-size:14px;line-height:1.6;}'
+    +':root{--accent:#0066cc;--acd:#004499;--gold:#d4820a;--gl:#fff8ed;--green:#1a7a52;--grl:#e6f7ef;--t2:#5a607a;--t3:#9ba3bc;--border:#e4e7f0;}'
+    +'.ph{border-bottom:3px solid var(--accent);padding-bottom:12px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:flex-end;}'
+    +'.pb{font-size:22px;font-weight:700;letter-spacing:4px;}.pb-sub{font-size:9px;letter-spacing:.15em;color:var(--t3);margin-top:2px;text-transform:uppercase;}'
+    +'.pr{text-align:right;}.pr h2{font-size:16px;font-weight:700;color:var(--accent);}.pr p{font-size:12px;color:var(--t3);}'
+    +'.pi-grid{display:grid;grid-template-columns:1fr 1fr;margin-bottom:14px;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;}'
+    +'.pi-cell{padding:6px 12px;border-right:1px solid #eee;border-bottom:1px solid #eee;}.pi-cell:nth-child(even){border-right:none;}'
+    +'.pi-lbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;}.pi-val{font-size:13px;font-weight:600;margin-top:1px;}'
+    +'.pnote{margin:8px 0;padding:7px 12px;background:#fff9e6;border-left:3px solid var(--gold);font-size:12px;color:var(--t2);border-radius:0 6px 6px 0;}'
+    +'.ptbl{width:100%;border-collapse:collapse;margin-bottom:12px;}.ptbl th{background:var(--accent);color:#fff;padding:6px 9px;font-size:12px;text-align:left;}'
+    +'.ptbl td{padding:6px 9px;border-bottom:1px solid #eee;font-size:13px;}.ptbl tr:nth-child(even) td{background:#f8f8ff;}'
+    +'.ptots{width:240px;margin-left:auto;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px;}'
+    +'.prow{display:flex;justify-content:space-between;padding:6px 12px;border-bottom:1px solid #eee;font-size:13px;}.prow:last-child{border-bottom:none;}'
+    +'.prow.grand{background:linear-gradient(135deg,var(--accent),var(--acd));color:#fff;font-weight:700;}'
+    +'.prow.dep{background:var(--gl);color:var(--gold);font-weight:600;}.prow.bal{background:var(--grl);color:var(--green);font-weight:600;}'
+    +'.psigs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:24px;}'
+    +'.psig{border:1px solid #ddd;border-radius:8px;padding:10px 12px;text-align:center;}'
+    +'.psig-line{border-bottom:1px solid #bbb;height:34px;margin-bottom:6px;}.psig-lbl{font-size:11px;color:var(--t2);font-weight:600;}.psig-name{font-size:12px;margin-top:2px;}.psig-date{font-size:10px;color:var(--t3);margin-top:4px;}'
+    +'.no-print{text-align:center;padding:12px 0 16px;}'
+    +'.no-print button{padding:10px 20px;background:#e74c3c;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:600;margin:0 5px;}'
+    +'.no-print .btn-print{background:var(--accent);}'
+    +'@media print{.no-print{display:none;}@page{margin:10mm;size:A4;}}'
+    +'</style></head><body>'
+    +'<div class="no-print">'
+    +'<button class="btn-print" onclick="window.print()">🖨️ พิมพ์</button>'
+    +'<button onclick="window.print()">📄 บันทึกเป็น PDF (เลือก Save as PDF)</button>'
+    +'<p style="margin-top:8px;font-size:12px;color:#999;">เลือก Destination → Save as PDF แล้วกด Save</p>'
+    +'</div>'
+    +h+'</body></html>');
+  w.document.close();
+}
+
+function shareOrder(){
+  var o=colForm();
+  if(!o.cust.trim()){toast('กรุณากรอกชื่อลูกค้าก่อน','err');return;}
+  // ถ้ามี editId ใช้ URL ตรง หรือใช้ Web Share API
+  var url=window.location.href;
+  var text='ใบสั่งงาน NEW APPAREL\n'
+    +'ลูกค้า: '+o.cust+'\n'
+    +(o.design?'ลาย: '+o.design+'\n':'')
+    +'ยอดรวม: ฿'+fmt(o.total)+'\n'
+    +'วันนัดส่ง: '+dTH(o.ddate);
+  if(navigator.share){
+    navigator.share({title:'ใบสั่งงาน '+o.cust, text:text, url:url})
+      .then(function(){toast('แชร์แล้ว ✅','ok');})
+      .catch(function(){});
+  } else {
+    // fallback copy to clipboard
+    navigator.clipboard.writeText(text+'\n'+url).then(function(){
+      toast('คัดลอกข้อมูลแล้ว — วางใน LINE หรือ Chat ได้เลย 📋','ok');
+    }).catch(function(){
+      toast('ไม่รองรับการแชร์ในเบราว์เซอร์นี้','err');
+    });
+  }
+}
 function checkShipFee(){
   var method=document.getElementById('f-ship').value;
   var shipInput=document.getElementById('s-ship');
@@ -1416,6 +1600,26 @@ function openCalPopup(e,dateStr){
 }
 function closeCalPopup(){document.getElementById('cal-popup').classList.remove('show');}
 
+// ══ DASHBOARD ═══════════════════════════════════════
+var dashCharts={};
+function destroyChart(id){if(dashCharts[id]){dashCharts[id].destroy();delete dashCharts[id];}}
+
+function getFilteredForDash(){
+  var period=document.getElementById('dash-period')?document.getElementById('dash-period').value:'month';
+  var now=new Date(),y=now.getFullYear()+543,m=now.getMonth();
+  return orders.filter(function(o){
+    if(o.cancelled)return false;
+    if(period==='all')return true;
+    if(!o.date)return false;
+    var p=o.date.split('-');var oy=parseInt(p[0])+543,om=parseInt(p[1])-1;
+    if(period==='month')return oy===y&&om===m;
+    if(period==='3month'){var diff=(y*12+m)-(oy*12+om);return diff>=0&&diff<3;}
+    if(period==='year')return oy===y;
+    return true;
+  });
+}
+
+
 // ══ UPDATE STATS ══
 function updateStats(){
   var active=orders.filter(function(o){return !o.cancelled;});
@@ -1477,6 +1681,127 @@ function doPrint(o){
 }
 function printForm(){doPrint(colForm());}
 function printById(id){var o=orders.find(function(x){return x.id===id;});if(o)doPrint(o);}
+
+// ══ DASHBOARD ══════════════════════════════════
+var dashChart=null;
+
+function filterOrders(){
+  var f=document.getElementById('dash-filter');
+  var val=f?f.value:'all';
+  var now=new Date();
+  var yr=now.getFullYear(), mo=now.getMonth();
+  return orders.filter(function(o){
+    if(o.cancelled)return false;
+    if(val==='all')return true;
+    var d=new Date(o.date||o.createdAt||'');
+    if(val==='month') return d.getFullYear()===yr&&d.getMonth()===mo;
+    if(val==='last3'){var m3=new Date(yr,mo-2,1);return d>=m3;}
+    if(val==='year') return d.getFullYear()===yr;
+    return true;
+  });
+}
+
+// ── DASHBOARD CHARTS ──
+var dashCharts={};
+function destroyDashCharts(){Object.keys(dashCharts).forEach(function(k){if(dashCharts[k]){dashCharts[k].destroy();dashCharts[k]=null;}});}
+
+function mkChart(id,cfg){
+  var el=document.getElementById(id);if(!el||!window.Chart)return;
+  if(dashCharts[id]){dashCharts[id].destroy();}
+  dashCharts[id]=new Chart(el,cfg);
+}
+
+var PALETTE=['#0066cc','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#f97316','#84cc16'];
+
+function filterOrders(){
+  var period=document.getElementById('dash-period').value;
+  var now=new Date();
+  return orders.filter(function(o){
+    if(o.cancelled)return false;
+    if(period==='all')return true;
+    var d=new Date(o.date||o.createdAt||'');
+    if(isNaN(d))return false;
+    if(period==='month')return d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth();
+    if(period==='3month'){var t=new Date(now);t.setMonth(t.getMonth()-3);return d>=t;}
+    if(period==='year')return d.getFullYear()===now.getFullYear();
+    return true;
+  });
+}
+
+function renderDash(){
+  var data=filterOrders();
+  var tot=data.reduce(function(s,o){return s+(+o.total||0);},0);
+  var dep=data.reduce(function(s,o){return s+(+o.dep||0);},0);
+  var bal=data.reduce(function(s,o){return s+(+o.total||0)-(+o.dep||0);},0);
+  var cnt=data.length;
+  var unsent=data.filter(function(o){return o.prod!=='shipped';}).length;
+
+  // ── KPI Cards ──
+  function kpi(icon,val,lbl,sub,color){
+    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;border-top:3px solid '+color+';">'
+      +'<div style="font-size:26px;margin-bottom:6px;">'+icon+'</div>'
+      +'<div style="font-size:22px;font-weight:700;color:'+color+';">'+val+'</div>'
+      +'<div style="font-size:13px;color:var(--t2);font-weight:600;margin-top:2px;">'+lbl+'</div>'
+      +(sub?'<div style="font-size:11px;color:var(--t3);margin-top:3px;">'+sub+'</div>':'')
+      +'</div>';
+  }
+  document.getElementById('dash-kpi').innerHTML=
+    kpi('💰','฿'+fmt(tot),'ยอดขายรวม',cnt+' ออเดอร์','#0066cc')
+   +kpi('✅','฿'+fmt(dep),'รับชำระแล้ว',Math.round(tot>0?dep/tot*100:0)+'% ของยอดรวม','#10b981')
+   +kpi('⏳','฿'+fmt(bal),'ยอดค้างชำระ',data.filter(function(o){return o.total>o.dep;}).length+' ออเดอร์','#ef4444')
+   +kpi('📦',unsent,'ยังไม่จัดส่ง',cnt-unsent+' จัดส่งแล้ว','#f59e0b');
+
+  var months_th=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
+  // ── Monthly Bar + Line ──
+  var mMap={};
+  data.forEach(function(o){
+    var d=new Date(o.date||o.createdAt||'');if(isNaN(d))return;
+    var k=d.getFullYear()+'-'+String(d.getMonth()).padStart(2,'0');
+    if(!mMap[k])mMap[k]={sales:0,count:0};
+    mMap[k].sales+=(+o.total||0);mMap[k].count++;
+  });
+  var mKeys=Object.keys(mMap).sort();
+  var mLabels=mKeys.map(function(k){var p=k.split('-');return months_th[+p[1]]+' '+(+p[0]+543);});
+  mkChart('chart-monthly',{type:'bar',data:{labels:mLabels,datasets:[
+    {label:'ยอดขาย (฿)',data:mKeys.map(function(k){return mMap[k].sales;}),backgroundColor:'rgba(0,102,204,.75)',borderRadius:8,borderSkipped:false,yAxisID:'y'},
+    {label:'จำนวนออเดอร์',data:mKeys.map(function(k){return mMap[k].count;}),type:'line',borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.1)',fill:true,tension:.4,pointBackgroundColor:'#f59e0b',borderWidth:2,pointRadius:4,yAxisID:'y1'}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}}},scales:{y:{ticks:{callback:function(v){return '฿'+(v>=1000?(v/1000).toFixed(0)+'K':v);}},grid:{color:'rgba(0,0,0,.04)'}},y1:{position:'right',ticks:{stepSize:1},grid:{display:false}}}}});
+
+  // ── Branch Donut ──
+  var locs=['ประตูน้ำ','ประชาอุทิศ','ประตูน้ำ+ประชาอุทิศ'];
+  var locVals=locs.map(function(l){return data.filter(function(o){return o.loc===l;}).length;});
+  mkChart('chart-branch',{type:'doughnut',data:{labels:locs,datasets:[{data:locVals,backgroundColor:['#0066cc','#10b981','#f59e0b'],borderWidth:2,borderColor:'#fff',hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},usePointStyle:true,padding:12}},tooltip:{callbacks:{label:function(c){return c.label+': '+c.parsed+' งาน';}}}}
+,cutout:'60%'}});
+
+  // ── Technique Horizontal Bar ──
+  var techMap={};
+  data.forEach(function(o){(o.techs||[]).forEach(function(t){techMap[t]=(techMap[t]||0)+1;});});
+  var techSorted=Object.entries(techMap).sort(function(a,b){return b[1]-a[1];}).slice(0,7);
+  mkChart('chart-tech',{type:'bar',data:{labels:techSorted.map(function(t){return t[0];}),datasets:[{label:'จำนวนงาน',data:techSorted.map(function(t){return t[1];}),backgroundColor:techSorted.map(function(_,i){return PALETTE[i%PALETTE.length]+'cc';}),borderRadius:6}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{stepSize:1},grid:{color:'rgba(0,0,0,.04)'}},y:{grid:{display:false}}}}});
+
+  // ── Staff Bar ──
+  var staffMap={};
+  data.forEach(function(o){if(o.issuer)staffMap[o.issuer]=(staffMap[o.issuer]||0)+(+o.total||0);});
+  var staffSorted=Object.entries(staffMap).sort(function(a,b){return b[1]-a[1];});
+  mkChart('chart-staff',{type:'bar',data:{labels:staffSorted.map(function(s){return s[0];}),datasets:[{label:'ยอดขาย',data:staffSorted.map(function(s){return s[1];}),backgroundColor:staffSorted.map(function(_,i){return PALETTE[i%PALETTE.length]+'cc';}),borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:function(v){return '฿'+(v/1000).toFixed(0)+'K';}},grid:{color:'rgba(0,0,0,.04)'}},x:{grid:{display:false}}}}});
+
+  // ── Top Customer Horizontal Bar ──
+  var custMap={};
+  data.forEach(function(o){custMap[o.cust]=(custMap[o.cust]||0)+(+o.total||0);});
+  var topCust=Object.entries(custMap).sort(function(a,b){return b[1]-a[1];}).slice(0,7);
+  mkChart('chart-topcust',{type:'bar',data:{labels:topCust.map(function(c){return c[0];}),datasets:[{label:'ยอดขาย',data:topCust.map(function(c){return c[1];}),backgroundColor:['#ffd700cc','#c0c0c0cc','#cd7f32cc','#0066cccc','#10b981cc','#f59e0bcc','#8b5cf6cc'],borderRadius:6}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return '฿'+fmt(c.parsed.x);}}}},scales:{x:{ticks:{callback:function(v){return '฿'+(v/1000).toFixed(0)+'K';}},grid:{color:'rgba(0,0,0,.04)'}},y:{grid:{display:false}}}}});
+
+  // ── Deadlines ──
+  var today=new Date();today.setHours(0,0,0,0);
+  var in7=new Date(today);in7.setDate(in7.getDate()+7);
+  var overdue=orders.filter(function(o){if(o.cancelled||o.prod==='shipped')return false;var d=new Date(o.ddate);return o.ddate&&d<today;}).sort(function(a,b){return new Date(a.ddate)-new Date(b.ddate);});
+  var due=orders.filter(function(o){if(o.cancelled||o.prod==='shipped')return false;var d=new Date(o.ddate);return o.ddate&&d>=today&&d<=in7;}).sort(function(a,b){return new Date(a.ddate)-new Date(b.ddate);});
+  var html='';
+  overdue.forEach(function(o){html+='<div onclick="editOrder(\''+o.id+'\')" style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;margin-bottom:6px;border-radius:8px;background:var(--rl);cursor:pointer;"><span style="font-size:13px;font-weight:600;color:var(--red);">⚠️ '+o.cust+'</span><span style="font-size:11px;color:var(--red);">'+dTH(o.ddate)+'</span></div>';});
+  due.forEach(function(o){html+='<div onclick="editOrder(\''+o.id+'\')" style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;margin-bottom:6px;border-radius:8px;background:var(--acl);cursor:pointer;"><span style="font-size:13px;font-weight:600;color:var(--accent);">📅 '+o.cust+(o.design?' · '+o.design:'')+'</span><span style="font-size:11px;color:var(--accent);">'+dTH(o.ddate)+'</span></div>';});
+  document.getElementById('dash-due').innerHTML=html||'<div style="text-align:center;padding:32px 0;color:var(--t3);">✅ ไม่มีงานที่ใกล้ครบกำหนด</div>';
+}
 
 // ══ USER MANAGEMENT ══════════════════════════════
 var editUsername=null;
