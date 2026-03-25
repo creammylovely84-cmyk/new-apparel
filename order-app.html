@@ -344,6 +344,8 @@ textarea.fi{resize:vertical;min-height:70px;}
       <div class="sb-item" id="nav-dash" onclick="showPage('dash')">📊 Dashboard</div>
       <div class="sb-item" id="nav-new" onclick="showPage('new')">✏️ สร้างใบสั่งงานใหม่</div>
       <div class="sb-item" id="nav-cal" onclick="showPage('cal')">📅 ปฏิทินจัดส่ง</div>
+      <div class="sb-item admin-only" id="nav-users" onclick="showPage('users')" style="display:none;">👥 จัดการผู้ใช้</div>
+      <div class="sb-item admin-only" id="nav-stock" onclick="showPage('stock')" style="display:none;">📦 จัดการสต็อก <span id="cnt-low-stock" class="loc-cnt" style="background:#ef4444;display:none;"></span></div>
       <div class="sb-lbl" style="margin-top:6px;background:var(--accent);color:#fff;border-radius:6px;padding:5px 10px;opacity:1;">สาขาที่ผลิต <span style="opacity:.7;font-weight:400;">(ยังไม่จัดส่ง)</span></div>
       <div class="sb-item" id="nav-loc-pn"  onclick="filterLoc('ประตูน้ำ')">🏭 ประตูน้ำ <span id="cnt-pn"  class="loc-cnt"></span></div>
       <div class="sb-item" id="nav-loc-pu"  onclick="filterLoc('ประชาอุทิศ')">🏭 ประชาอุทิศ <span id="cnt-pu"  class="loc-cnt"></span></div>
@@ -355,8 +357,6 @@ textarea.fi{resize:vertical;min-height:70px;}
       <div class="sb-item" id="nav-gfx-done"     onclick="filterGfx('done')">✅ สั่งผลิตจริง <span id="cnt-gfx-done" class="loc-cnt"></span></div>
       <div class="sb-lbl" style="margin-top:6px;background:var(--accent);color:#fff;border-radius:6px;padding:5px 10px;opacity:1;">เทคนิคการผลิต</div>
       <div id="tech-filter-list"></div>
-      <div class="sb-item admin-only" id="nav-users" onclick="showPage('users')" style="display:none;">👥 จัดการผู้ใช้</div>
-      <div class="sb-item admin-only" id="nav-stock" onclick="showPage('stock')" style="display:none;">📦 จัดการสต็อก <span id="cnt-low-stock" class="loc-cnt" style="background:#ef4444;display:none;"></span></div>
       <div class="sb-lbl" style="margin-top:10px;">ระบบ</div>
       <div class="sb-item" onclick="showDBModal()">⚙️ ตั้งค่า Google Sheet</div>
       <div class="sb-item" onclick="doLogout()" style="color:rgba(255,100,100,.7);">🚪 ออกจากระบบ</div>
