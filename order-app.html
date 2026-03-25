@@ -44,7 +44,7 @@ body{font-family:Tahoma,'TH Sarabun New',Arial,sans-serif;background:var(--bg);c
 .main{margin-left:210px;flex:1;padding:24px 28px;}
 #page-dash,#page-users,#page-stock,#page-list,#page-new,#page-cal{min-height:0;}
 [id^="page-"]{box-sizing:border-box;}
-[id^="page-"][style*="display:none"]{height:0!important;overflow:hidden!important;padding:0!important;margin:0!important;}
+.page-hidden{height:0!important;overflow:hidden!important;padding:0!important;margin:0!important;position:absolute!important;visibility:hidden!important;}
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
 .pg-title{font-size:20px;font-weight:700;color:var(--text);}
 .pg-sub{font-size:13px;color:var(--t3);margin-top:2px;}
@@ -534,7 +534,7 @@ textarea.fi{resize:vertical;min-height:70px;}
     </div>
 
     <!-- DASHBOARD PAGE -->
-    <div id="page-dash" style="display:none;">
+    <div id="page-dash" style="display:none;position:fixed;top:-9999px;left:-9999px;">
       <div class="topbar">
         <div><div class="pg-title">📊 Dashboard</div><div class="pg-sub" id="dash-sub">ภาพรวมธุรกิจ NEW APPAREL</div></div>
         <div style="display:flex;gap:8px;">
@@ -555,11 +555,11 @@ textarea.fi{resize:vertical;min-height:70px;}
       <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px;">
         <div class="dash-card">
           <div class="dash-title">📈 ยอดขายรายเดือน</div>
-          <div style="position:relative;height:220px;"><canvas id="chart-monthly"></canvas></div>
+          <div id="wrap-monthly" style="position:relative;height:0;overflow:hidden;"><canvas id="chart-monthly"></canvas></div>
         </div>
         <div class="dash-card">
           <div class="dash-title">🏭 สาขาที่ผลิต</div>
-          <div style="position:relative;height:220px;"><canvas id="chart-branch"></canvas></div>
+          <div id="wrap-branch" style="position:relative;height:0;overflow:hidden;"><canvas id="chart-branch"></canvas></div>
         </div>
       </div>
 
@@ -571,7 +571,7 @@ textarea.fi{resize:vertical;min-height:70px;}
         </div>
         <div class="dash-card">
           <div class="dash-title">👤 ยอดขายแยกตามพนักงาน</div>
-          <div style="position:relative;height:220px;"><canvas id="chart-staff"></canvas></div>
+          <div id="wrap-staff" style="position:relative;height:0;overflow:hidden;"><canvas id="chart-staff"></canvas></div>
         </div>
       </div>
 
@@ -579,11 +579,11 @@ textarea.fi{resize:vertical;min-height:70px;}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
         <div class="dash-card">
           <div class="dash-title">🏆 Top ลูกค้า</div>
-          <div style="position:relative;height:220px;"><canvas id="chart-topcust"></canvas></div>
+          <div id="wrap-topcust" style="position:relative;height:0;overflow:hidden;"><canvas id="chart-topcust"></canvas></div>
         </div>
         <div class="dash-card">
           <div class="dash-title">🔧 เทคนิคการผลิต</div>
-          <div style="position:relative;height:220px;"><canvas id="chart-tech"></canvas></div>
+          <div id="wrap-tech" style="position:relative;height:0;overflow:hidden;"><canvas id="chart-tech"></canvas></div>
         </div>
       </div>
     </div>
@@ -1103,10 +1103,26 @@ function showPage(pg){
   }
   ['page-list','page-new','page-cal','page-users','page-dash','page-stock'].forEach(function(id){
     var el=document.getElementById(id);
-    if(el){el.style.display='none';}
+    if(el){
+      el.style.display='none';
+      el.classList.add('page-hidden');
+      if(id==='page-dash'){
+        el.style.position='fixed';
+        el.style.top='-9999px';
+        el.style.left='-9999px';
+      }
+    }
   });
   var target=document.getElementById('page-'+pg);
-  if(target){target.style.display='block';}
+  if(target){
+    if(pg==='dash'){
+      target.style.position='';
+      target.style.top='';
+      target.style.left='';
+    }
+    target.style.display='block';
+    target.classList.remove('page-hidden');
+  }
   document.getElementById('nav-new').className='sb-item'+(pg==='new'?' active':'');
   document.getElementById('nav-cal').className='sb-item'+(pg==='cal'?' active':'');
   document.getElementById('nav-dash').className='sb-item'+(pg==='dash'?' active':'');
@@ -1125,8 +1141,8 @@ function showPage(pg){
   if(pg==='stock'){loadStockFromSheet().then(function(){renderStock();});}
   closeCalPopup();
   window.scrollTo(0,0);
-  var mainEl=document.querySelector('.main');
-  if(mainEl)mainEl.scrollTop=0;
+  document.documentElement.scrollTop=0;
+  document.body.scrollTop=0;
 }
 
 // ── FORM ──
@@ -1809,6 +1825,9 @@ function filterOrders(){
 // ── DASHBOARD CHARTS ──
 var dashCharts={};
 function destroyDashCharts(){
+  ['wrap-monthly','wrap-branch','wrap-tech','wrap-staff','wrap-topcust'].forEach(function(id){
+    var el=document.getElementById(id);if(el){el.style.height='0';el.style.overflow='hidden';}
+  });
   Object.keys(dashCharts).forEach(function(k){
     if(dashCharts[k]){
       dashCharts[k].destroy();
@@ -1850,6 +1869,10 @@ function filterOrders(){
 }
 
 function renderDash(){
+  // Set chart wrapper heights
+  ['wrap-monthly','wrap-branch','wrap-tech','wrap-staff','wrap-topcust'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.style.height='220px';
+  });
   var data=filterOrders();
   var tot=data.reduce(function(s,o){return s+(+o.total||0);},0);
   var dep=data.reduce(function(s,o){return s+(+o.dep||0);},0);
