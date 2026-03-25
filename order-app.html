@@ -17,7 +17,7 @@
   --sb:#050a14;
 }
 body{font-family:Tahoma,'TH Sarabun New',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;}
-.app{display:flex;min-height:100vh;align-items:flex-start;}
+.app{display:flex;min-height:100vh;}
 .sb{width:210px;background:var(--sb);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto;}
 .sb-logo{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,.07);}
 .sb-logo h1{font-size:18px;font-weight:700;letter-spacing:3px;color:#fff;}
@@ -41,10 +41,13 @@ body{font-family:Tahoma,'TH Sarabun New',Arial,sans-serif;background:var(--bg);c
 .val-banner.show{display:block;}
 .val-banner ul{margin:6px 0 0 18px;}
 .val-banner li{margin-bottom:2px;}
-.main{margin-left:210px;flex:1;padding:24px 28px;}
-#page-dash,#page-users,#page-stock,#page-list,#page-new,#page-cal{min-height:0;}
-[id^="page-"]{box-sizing:border-box;}
-.page-hidden{height:0!important;overflow:hidden!important;padding:0!important;margin:0!important;position:absolute!important;visibility:hidden!important;}
+.main{margin-left:210px;flex:1;padding:0;}
+.page-container{}
+.page-section{display:none;padding:24px 28px;}
+.page-section.active{display:block;}
+
+
+
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
 .pg-title{font-size:20px;font-weight:700;color:var(--text);}
 .pg-sub{font-size:13px;color:var(--t3);margin-top:2px;}
@@ -379,8 +382,8 @@ textarea.fi{resize:vertical;min-height:70px;}
     <div class="sb-stats" id="sb-stats"></div>
   </nav>
 
-  <main class="main">
-    <div id="page-list">
+  <main class="main"><div class="page-container">
+    <div id="page-list" class="page-section">
       <div class="topbar">
         <div><div class="pg-title">ใบสั่งงานทั้งหมด</div><div class="pg-sub" id="list-sub">0 รายการ</div></div>
         <div style="display:flex;gap:8px;">
@@ -391,7 +394,7 @@ textarea.fi{resize:vertical;min-height:70px;}
       <div id="order-list"></div>
     </div>
 
-    <div id="page-new" style="display:none">
+    <div id="page-new" class="page-section">
       <div class="topbar">
         <div><div class="pg-title" id="form-title">สร้างใบสั่งงานใหม่</div><div class="pg-sub">กรอกข้อมูลแล้วกด บันทึก</div></div>
         <div style="display:flex;gap:8px;">
@@ -402,7 +405,7 @@ textarea.fi{resize:vertical;min-height:70px;}
           <button class="btn btn-o" onclick="shareOrder()" title="แชร์ใบงาน">🔗 แชร์</button>
           <button class="btn btn-p" id="save-btn" onclick="saveOrder()">💾 บันทึก</button>
         </div>
-      </div>
+      
       <div class="card"><div class="card-body">
         <div class="fsec">
           <div class="ftitle">ข้อมูลลูกค้า</div>
@@ -533,8 +536,10 @@ textarea.fi{resize:vertical;min-height:70px;}
       </div></div>
     </div>
 
+        </div>
+
     <!-- DASHBOARD PAGE -->
-    <div id="page-dash" style="display:none;position:fixed;top:-9999px;left:-9999px;">
+    <div id="page-dash" class="page-section">
       <div class="topbar">
         <div><div class="pg-title">📊 Dashboard</div><div class="pg-sub" id="dash-sub">ภาพรวมธุรกิจ NEW APPAREL</div></div>
         <div style="display:flex;gap:8px;">
@@ -590,7 +595,7 @@ textarea.fi{resize:vertical;min-height:70px;}
     </div>
 
     <!-- STOCK PAGE -->
-    <div id="page-stock" style="display:none;">
+    <div id="page-stock" class="page-section">
       <div class="topbar">
         <div><div class="pg-title">📦 จัดการสต็อก</div><div class="pg-sub">สินค้าเปล่าก่อนปัก/พิมพ์ แยกตามชื่อ สี ไซส์</div></div>
         <div style="display:flex;gap:8px;">
@@ -654,7 +659,7 @@ textarea.fi{resize:vertical;min-height:70px;}
       </div>
     </div>
 
-    <div id="page-cal" style="display:none;">
+    <div id="page-cal" class="page-section">
       <div class="cal-header">
         <div class="cal-nav">
           <button onclick="calMove(-1)">‹</button>
@@ -670,7 +675,7 @@ textarea.fi{resize:vertical;min-height:70px;}
       </div>
       <div class="cal-grid" id="cal-grid"></div>
     </div>
-    <div id="page-users" style="display:none;">
+    <div id="page-users" class="page-section">
       <div class="topbar">
         <div><div class="pg-title">จัดการผู้ใช้</div><div class="pg-sub">เพิ่ม ลบ แก้ไขพนักงานและสิทธิ์การใช้งาน</div></div>
         <button class="btn btn-p" onclick="showUserModal()">＋ เพิ่มผู้ใช้ใหม่</button>
@@ -682,7 +687,7 @@ textarea.fi{resize:vertical;min-height:70px;}
         </table>
       </div></div>
     </div>
-  </main>
+  </div></main>
 </div>
 
 <!-- USER MODAL -->
@@ -861,7 +866,8 @@ function onLoginSuccess(){
   adminItems.forEach(function(el){el.style.display=currentUser.role==='admin'?'':'none';});  // auto-fill ผู้ออกบิล
   document.getElementById('f-issuer').value=currentUser.displayName;
   // โหลดข้อมูล แล้วไปหน้า list ก่อน ไม่ render dashboard อัตโนมัติ
-  reloadOrders().then(function(){showPage('list');});
+  showPage('list');
+  reloadOrders();
   if(currentUser.role==='admin') loadUsers();
 }
 
@@ -1079,54 +1085,19 @@ function filterLoc(loc){
 }
 
 function showPage(pg){
-  // Force reset all dashboard canvases to prevent height bleed
-  if(pg!=='dash'){
-    document.querySelectorAll('#page-dash canvas').forEach(function(cv){
-      cv.height=1;cv.width=1;cv.style.height='1px';
-    });
-  }
-  // ทำลาย chart และซ่อน canvas เพื่อไม่ให้ height ค้าง
-  if(pg!=='dash'){
-    destroyDashCharts();
-    var dashPage=document.getElementById('page-dash');
-    if(dashPage){
-      ['chart-monthly','chart-branch','chart-tech','chart-staff','chart-topcust'].forEach(function(id){
-        var el=document.getElementById(id);
-        if(el){el.height=0;el.width=0;el.style.height='0';el.style.display='none';}
-      });
-    }
-  } else {
-    ['chart-monthly','chart-branch','chart-tech','chart-staff','chart-topcust'].forEach(function(id){
-      var el=document.getElementById(id);
-      if(el){el.style.height='';el.style.display='';}
-    });
-  }
-  ['page-list','page-new','page-cal','page-users','page-dash','page-stock'].forEach(function(id){
-    var el=document.getElementById(id);
-    if(el){
-      el.style.display='none';
-      el.classList.add('page-hidden');
-      if(id==='page-dash'){
-        el.style.position='fixed';
-        el.style.top='-9999px';
-        el.style.left='-9999px';
-      }
-    }
+  var pages=['list','new','cal','users','dash','stock'];
+  pages.forEach(function(name){
+    var el=document.getElementById('page-'+name);
+    if(!el)return;
+    el.classList.remove('active');
   });
   var target=document.getElementById('page-'+pg);
-  if(target){
-    if(pg==='dash'){
-      target.style.position='';
-      target.style.top='';
-      target.style.left='';
-    }
-    target.style.display='block';
-    target.classList.remove('page-hidden');
-  }
+  if(target) target.classList.add('active');
+
   document.getElementById('nav-new').className='sb-item'+(pg==='new'?' active':'');
   document.getElementById('nav-cal').className='sb-item'+(pg==='cal'?' active':'');
   document.getElementById('nav-dash').className='sb-item'+(pg==='dash'?' active':'');
-  document.getElementById('nav-users').className='sb-item admin-only'+(pg==='users'?' active':'');
+  var nu=document.getElementById('nav-users');if(nu)nu.className='sb-item admin-only'+(pg==='users'?' active':'');
   var ns=document.getElementById('nav-stock');if(ns)ns.className='sb-item admin-only'+(pg==='stock'?' active':'');
   if(pg==='list'){editId=null;renderList();}
   if(pg!=='list'){
@@ -1137,12 +1108,10 @@ function showPage(pg){
   if(pg==='new'&&!editId)initForm();
   if(pg==='users')renderUsers();
   if(pg==='cal')renderCal();
-  if(pg==='dash')renderDash();
+  if(pg==='dash') renderDash();
   if(pg==='stock'){loadStockFromSheet().then(function(){renderStock();});}
   closeCalPopup();
   window.scrollTo(0,0);
-  document.documentElement.scrollTop=0;
-  document.body.scrollTop=0;
 }
 
 // ── FORM ──
