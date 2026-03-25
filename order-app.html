@@ -17,7 +17,7 @@
   --sb:#050a14;
 }
 body{font-family:Tahoma,'TH Sarabun New',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;}
-.app{display:flex;min-height:100vh;}
+.app{display:flex;min-height:100vh;align-items:flex-start;}
 .sb{width:210px;background:var(--sb);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto;}
 .sb-logo{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,.07);}
 .sb-logo h1{font-size:18px;font-weight:700;letter-spacing:3px;color:#fff;}
@@ -42,6 +42,9 @@ body{font-family:Tahoma,'TH Sarabun New',Arial,sans-serif;background:var(--bg);c
 .val-banner ul{margin:6px 0 0 18px;}
 .val-banner li{margin-bottom:2px;}
 .main{margin-left:210px;flex:1;padding:24px 28px;}
+#page-dash,#page-users,#page-stock,#page-list,#page-new,#page-cal{min-height:0;}
+[id^="page-"]{box-sizing:border-box;}
+[id^="page-"][style*="display:none"]{height:0!important;overflow:hidden!important;padding:0!important;margin:0!important;}
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
 .pg-title{font-size:20px;font-weight:700;color:var(--text);}
 .pg-sub{font-size:13px;color:var(--t3);margin-top:2px;}
@@ -857,8 +860,8 @@ function onLoginSuccess(){
   var adminItems=document.querySelectorAll('.admin-only');
   adminItems.forEach(function(el){el.style.display=currentUser.role==='admin'?'':'none';});  // auto-fill ผู้ออกบิล
   document.getElementById('f-issuer').value=currentUser.displayName;
-  // โหลดข้อมูล แล้วไปหน้า Dashboard
-  reloadOrders().then(function(){showPage('dash');});
+  // โหลดข้อมูล แล้วไปหน้า list ก่อน ไม่ render dashboard อัตโนมัติ
+  reloadOrders().then(function(){showPage('list');});
   if(currentUser.role==='admin') loadUsers();
 }
 
@@ -1076,10 +1079,34 @@ function filterLoc(loc){
 }
 
 function showPage(pg){
+  // Force reset all dashboard canvases to prevent height bleed
+  if(pg!=='dash'){
+    document.querySelectorAll('#page-dash canvas').forEach(function(cv){
+      cv.height=1;cv.width=1;cv.style.height='1px';
+    });
+  }
+  // ทำลาย chart และซ่อน canvas เพื่อไม่ให้ height ค้าง
+  if(pg!=='dash'){
+    destroyDashCharts();
+    var dashPage=document.getElementById('page-dash');
+    if(dashPage){
+      ['chart-monthly','chart-branch','chart-tech','chart-staff','chart-topcust'].forEach(function(id){
+        var el=document.getElementById(id);
+        if(el){el.height=0;el.width=0;el.style.height='0';el.style.display='none';}
+      });
+    }
+  } else {
+    ['chart-monthly','chart-branch','chart-tech','chart-staff','chart-topcust'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el){el.style.height='';el.style.display='';}
+    });
+  }
   ['page-list','page-new','page-cal','page-users','page-dash','page-stock'].forEach(function(id){
-    var el=document.getElementById(id);if(el)el.style.display='none';
+    var el=document.getElementById(id);
+    if(el){el.style.display='none';}
   });
-  document.getElementById('page-'+pg).style.display='';
+  var target=document.getElementById('page-'+pg);
+  if(target){target.style.display='block';}
   document.getElementById('nav-new').className='sb-item'+(pg==='new'?' active':'');
   document.getElementById('nav-cal').className='sb-item'+(pg==='cal'?' active':'');
   document.getElementById('nav-dash').className='sb-item'+(pg==='dash'?' active':'');
@@ -1095,9 +1122,11 @@ function showPage(pg){
   if(pg==='users')renderUsers();
   if(pg==='cal')renderCal();
   if(pg==='dash')renderDash();
-  if(pg==='stock'){loadStockFromSheet().then(function(){renderStock();});return;}
-  if(pg==='stock')renderStock();
+  if(pg==='stock'){loadStockFromSheet().then(function(){renderStock();});}
   closeCalPopup();
+  window.scrollTo(0,0);
+  var mainEl=document.querySelector('.main');
+  if(mainEl)mainEl.scrollTop=0;
 }
 
 // ── FORM ──
@@ -1779,7 +1808,23 @@ function filterOrders(){
 
 // ── DASHBOARD CHARTS ──
 var dashCharts={};
-function destroyDashCharts(){Object.keys(dashCharts).forEach(function(k){if(dashCharts[k]){dashCharts[k].destroy();dashCharts[k]=null;}});}
+function destroyDashCharts(){
+  Object.keys(dashCharts).forEach(function(k){
+    if(dashCharts[k]){
+      dashCharts[k].destroy();
+      dashCharts[k]=null;
+      var el=document.getElementById(k);
+      if(el){el.style.height='';el.removeAttribute('height');el.removeAttribute('width');}
+    }
+  });
+  // reset all chart containers
+  ['chart-monthly','chart-branch','chart-tech','chart-staff','chart-topcust'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){el.style.height='';el.removeAttribute('height');el.removeAttribute('width');}
+    var parent=el&&el.parentElement;
+    if(parent){parent.style.height='220px';}
+  });
+}
 
 function mkChart(id,cfg){
   var el=document.getElementById(id);if(!el||!window.Chart)return;
