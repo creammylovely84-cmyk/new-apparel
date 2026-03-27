@@ -1100,7 +1100,12 @@ async function loadOrders(){
   if(gsUrl){
     try{
       var data=await gsCall('GET');
-      orders=data;
+      // normalize วันที่ทุก order ที่โหลดมาจาก Google Sheets
+      orders=data.map(function(o){
+        o.date=normalizeDate(o.date);
+        o.ddate=normalizeDate(o.ddate);
+        return o;
+      });
       lss(LK,JSON.stringify(orders)); // local backup
       return;
     }catch(e){toast('โหลดจาก Google Sheet ไม่ได้ ใช้ local แทน','err');}
@@ -1177,6 +1182,31 @@ function showPage(pg){
 
 // ── FORM ──
 function tod(){return new Date().toISOString().split('T')[0];}
+
+// แปลงวันที่ทุกรูปแบบให้เป็น YYYY-MM-DD สำหรับ input[type=date]
+function normalizeDate(s){
+  if(!s) return '';
+  s = String(s).trim();
+  // ถ้าเป็น YYYY-MM-DD อยู่แล้ว
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  // รูปแบบ D/M/YYYY หรือ DD/MM/YYYY (Google Sheets มักส่งมาแบบนี้)
+  var sl = s.split(/[\/\-\.]/);
+  if(sl.length === 3){
+    var a=sl[0], b=sl[1], c=sl[2];
+    // ถ้า c เป็นปี 4 หลัก → D/M/YYYY
+    if(c.length === 4){
+      return c+'-'+b.padStart(2,'0')+'-'+a.padStart(2,'0');
+    }
+    // ถ้า a เป็นปี 4 หลัก → YYYY/M/D
+    if(a.length === 4){
+      return a+'-'+b.padStart(2,'0')+'-'+c.padStart(2,'0');
+    }
+  }
+  // ลองใช้ Date parse เป็นทางสุดท้าย
+  var d = new Date(s);
+  if(!isNaN(d)) return d.toISOString().split('T')[0];
+  return '';
+}
 function initForm(){
   editId=null;document.getElementById('form-title').textContent='สร้างใบสั่งงานใหม่';
   // reset validation
@@ -1687,8 +1717,8 @@ function editOrder(id){
   document.getElementById('f-cust').value=o.cust||'';
   document.getElementById('f-phone').value=o.phone||'';
   document.getElementById('f-design').value=o.design||'';
-  document.getElementById('f-date').value=o.date||'';
-  document.getElementById('f-ddate').value=o.ddate||'';
+  document.getElementById('f-date').value=normalizeDate(o.date);
+  document.getElementById('f-ddate').value=normalizeDate(o.ddate);
   document.getElementById('f-ship').value=o.shipMethod||'';
   document.getElementById('f-loc').value=o.loc||'ประตูน้ำ';
   document.getElementById('f-issuer').value=o.issuer||'';
